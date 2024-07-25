@@ -1,72 +1,60 @@
-import { View, Text, Image, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+
 import { MEALS } from '../data/dummy-data';
+import List from '../components/MealDetail/List';
+import MealDetails from '../components/MealDetails';
+import Subtitle from '../components/MealDetail/Subtitle';
 
 function MealDetailsScreen({ route }) {
-  console.log(route.params.mealId);
-
   const mealId = route.params.mealId;
-
   const selectedMeal = MEALS.find((meal) => meal.id === mealId);
 
-  console.log('selected meal: ', selectedMeal.title);
-
   return (
-    <View style={styles.mealItem}>
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Recipe for {selectedMeal.title}</Text>
-        <View style={styles.details}>
-          <Text style={styles.detailItem}>{selectedMeal.duration}m</Text>
-          <Text style={styles.detailItem}>{selectedMeal.complexity}</Text>
-          <Text style={styles.detailItem}>{selectedMeal.affordability}</Text>
+    <ScrollView style={styles.rootContainer}>
+      <Image style={styles.image} source={{ uri: selectedMeal.imageUrl }} />
+      <Text style={styles.title}> Recipe for: {selectedMeal.title}</Text>
+      <MealDetails
+        duration={selectedMeal.duration}
+        complexity={selectedMeal.complexity}
+        affordability={selectedMeal.affordability}
+        textStyle={styles.detailText}
+      />
+      <View style={styles.listOuterContainer}>
+        <View style={styles.listContainer}>
+          <Subtitle>Ingredients</Subtitle>
+          <List data={selectedMeal.ingredients} />
+          <Subtitle>Steps</Subtitle>
+          <List data={selectedMeal.steps} />
         </View>
-        <Image
-          style={styles.image}
-          source={{ uri: selectedMeal.imageUrl }}
-        ></Image>
-        <Text style={styles.details}>{selectedMeal.steps}</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 export default MealDetailsScreen;
 
 const styles = StyleSheet.create({
-  mealItem: {
-    margin: 16,
-    borderRadius: 8,
-    overflow: Platform.OS === 'android' ? 'hidden' : 'visible',
-    backgroundColor: 'white',
-    elevation: 4,
-    shadowColor: 'black',
-    shadowOpacity: 0.25,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-  },
-  innerContainer: {
-    borderRadius: 8,
-    overflow: 'hidden',
+  rootContainer: {
+    marginBottom: 32,
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 350,
   },
-
   title: {
     fontWeight: 'bold',
+    fontSize: 24,
+    margin: 8,
     textAlign: 'center',
-    fontSize: 18,
-    margin: 8,
-    margin: 8,
+    color: 'white',
   },
-  details: {
-    flexDirection: 'row',
+  detailText: {
+    color: 'white',
+  },
+  listOuterContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
   },
-  detailItem: {
-    marginHorizontal: 4,
-    fontSize: 12,
+  listContainer: {
+    width: '80%',
   },
 });

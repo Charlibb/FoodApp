@@ -1,10 +1,22 @@
+import { useLayoutEffect } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 
-import { MEALS } from '../data/dummy-data';
+import { MEALS, CATEGORIES } from '../data/dummy-data';
 import MealItem from '../components/MealItem';
 
-const MealsOverviewScreen = ({ route }) => {
+const MealsOverviewScreen = ({ route, navigation }) => {
   const catId = route.params.categoryId;
+
+  // Set the title of the screen
+
+  // Code below will give warning Cannot update a component ('ConnectFunction') while rendering a different component ('Register'). We need to process this side effect before rendering with useLayoutEffect.
+  //  navigation.setOptions({ title: catTitle });
+
+  useLayoutEffect(() => {
+    const catTitle = CATEGORIES.find((cat) => cat.id === catId).title;
+
+    navigation.setOptions({ title: catTitle });
+  }, [catId, navigation]);
 
   const displayedMeals = MEALS.filter((mealItem) => {
     return mealItem.categoryIds.indexOf(catId) >= 0;
